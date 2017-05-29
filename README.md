@@ -1,4 +1,4 @@
-Node.js BoilerPlate
+Graph-forest
 =======================
 This project is basic boilerplate for a complete professional structure of a nodejs project.
 
