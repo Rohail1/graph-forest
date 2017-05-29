@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../partials/head.ejs %>
+</head>
+<body class="container">
+
+<header>
+    <% include ../partials/header.ejs %>
+</header>
+
+<main>
+    <div class="jumbotron">
+        <h1>Graph-Forest</h1>
+        <p>Upload your CSV file and Using Crossfilter we can manupilate Data and show it in graphs</p>
+    </div>
+    <h1 class="h3">Result</h1>
+    <ul>
+        <% for (var i = 0; i < data.length; i++) { %>
+        <li >
+            <span >
+            <%= data[i].Name %>
+            </span>
+        </li>
+        <% } %>
+    </ul>
+</main>
+
+<footer>
+    <% include ../partials/footer.ejs%>
+</footer>
+
+</body>
+</html>

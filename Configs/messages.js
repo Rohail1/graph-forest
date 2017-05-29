@@ -52,5 +52,10 @@ module.exports = {
     message : 'Required parameters missing.',
     success: false
   },
+  DATA_NOT_FOUND:{
+    code:404,
+    message : 'Required data not found.',
+    success: false
+  },
 
 };

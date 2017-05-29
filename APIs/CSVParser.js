@@ -6,8 +6,6 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
     try {
       // let validated = await validator.validatePostUsers(req.inputs);
       // if(validated.error)
-      console.log('req',req.body);
-      console.log('req',req.file);
       if(!req.file)
         return helper.sendResponse(res,messages.BAD_REQUEST);
       let data = [];
@@ -22,7 +20,7 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
           csvData.name = req.file.originalname;
           csvData.data = data;
           await csvData.save();
-          return helper.sendResponse(res,messages.SUCCESSFUL,data);
+          return res.redirect('/result/'+csvData._id);
         });
     } catch (ex){
       return helper.sendError(res,ex)
@@ -30,8 +28,18 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
   };
 
   const sendIndexFile = async (req,res) => {
-    console.log('ok');
     return res.render('pages/index.ejs');
+  };
+
+  const result = async (req,res) =>{
+    try {
+      let csvFile = await models.CSV.findOne({_id : req.inputs.resultId});
+      if(!csvFile)
+        return helper.sendResponse(res,messages.DATA_NOT_FOUND);
+      return res.render('pages/result.ejs',{data:csvFile.data});
+    }catch(ex){
+      return helper.sendError(res,ex)
+    }
   };
 
   module.exports.APIs = {
@@ -49,6 +57,13 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
       prefix : config.API_PREFIX.NO_PREFIX,
       middlewares : [], //FIFO order of middleware
       handler : sendIndexFile
+    },
+    admin : {
+      route : '/result/:resultId',
+      method : 'GET',
+      prefix : config.API_PREFIX.NO_PREFIX,
+      middlewares : [middlewares.getParams], //FIFO order of middleware
+      handler : result
     },
 
   };
