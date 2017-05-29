@@ -6,6 +6,8 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
     try {
       // let validated = await validator.validatePostUsers(req.inputs);
       // if(validated.error)
+      console.log('req',req.body);
+      console.log('req',req.file);
       if(!req.file)
         return helper.sendResponse(res,messages.BAD_REQUEST);
       let data = [];
@@ -27,6 +29,11 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
     }
   };
 
+  const sendIndexFile = async (req,res) => {
+    console.log('ok');
+    return res.render('pages/index.ejs');
+  };
+
   module.exports.APIs = {
 
     updateCVSFile : {
@@ -35,6 +42,13 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
       prefix : config.API_PREFIX.API,
       middlewares : [middlewares.uploadImageMiddleware.single('mediaFile')], //FIFO order of middleware
       handler : updateCSVFile
+    },
+    sendIndexFile : {
+      route : '/',
+      method : 'GET',
+      prefix : config.API_PREFIX.NO_PREFIX,
+      middlewares : [], //FIFO order of middleware
+      handler : sendIndexFile
     },
 
   };

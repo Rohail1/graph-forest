@@ -19,7 +19,8 @@ const configurations = {
     VALIDATOR_DIR : '/Validators',
     API_PREFIX : {
       API : '/api',
-      AUTH : '/auth'
+      AUTH : '/auth',
+      NO_PREFIX : ''
     }
   },
 
@@ -34,7 +35,8 @@ const configurations = {
     VALIDATOR_DIR : '/Validators',
     API_PREFIX : {
       API : '/api',
-      AUTH : '/auth'
+      AUTH : '/auth',
+      NO_PREFIX : ''
     }
   },
 
@@ -49,7 +51,8 @@ const configurations = {
     VALIDATOR_DIR : '/Validators',
     API_PREFIX : {
       API : '/api',
-      AUTH : '/auth'
+      AUTH : '/auth',
+      NO_PREFIX : ''
     }
   }
 };

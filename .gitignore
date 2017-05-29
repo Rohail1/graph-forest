@@ -5,7 +5,7 @@ logs
 *.log
 npm-debug.log*
 .idea
-public
+views
 # Runtime data
 pids
 *.pid
@@ -52,3 +52,4 @@ jspm_packages
 
 /envs/
 /uploads/
+!/views/
