@@ -3,11 +3,11 @@ module.exports = function (mongoose) {
   let Schema = mongoose.Schema;
   let models = {};
 
-  let User = require('./users')(Schema);
+  let CSV = require('./csv')(Schema);
 
 // Associating Models with Schemas
 
-  models.User = mongoose.model('User', User);
+  models.CSV = mongoose.model('CSV', CSV);
 
   return models;
 

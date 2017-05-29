@@ -3,7 +3,7 @@
  */
 
 
-module.exports = function ({mongoose}) {
+module.exports = function ({multer}) {
 
 
   // This middleware gets Params and add them in req.inputs
@@ -16,17 +16,17 @@ module.exports = function ({mongoose}) {
     next();
   };
 
-  const dummyRouteLevelMiddleware1 = (req, res, next) => {
-    next();
-  };
-
-  const dummyRouteLevelMiddleware2 = (req, res, next) => {
-    next();
-  };
+  const mediaStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, 'uploads/products/')
+    },
+    filename: function (req, file, cb) {
+      cb(null,file.originalname)
+    }
+  });
+  let uploadImageMiddleware = multer({  storage: mediaStorage});
 
   return {
-    dummyRouteLevelMiddleware1,
-    dummyRouteLevelMiddleware2,
     getParams
   }
 

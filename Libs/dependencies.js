@@ -16,6 +16,7 @@ module.exports = function (app, express,config) {
     bodyParser :require('body-parser'),
     cors : require('cors'),
     mongoose : mongoose,
+    multer : require('multer'),
     fs : require('fs-extra'),
     dbConnection : dbConnection,
     models : models,

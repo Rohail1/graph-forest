@@ -12,7 +12,7 @@ const configurations = {
     port : process.env.PORT,
     rootPath : rootPath,
     db: {
-      name : "db Name"
+      name : "GraphForest"
     },
     logStyle : 'dev',
     API_DIR : '/APIs',
@@ -28,7 +28,7 @@ const configurations = {
     rootPath : rootPath,
     logStyle : 'combined',
     db: {
-      name : "db Name"
+      name : "GraphForest"
     },
     API_DIR : '/APIs',
     VALIDATOR_DIR : '/Validators',
@@ -42,15 +42,15 @@ const configurations = {
     port : process.env.PORT || 3000,
     rootPath : rootPath,
     logStyle : 'combined',
+    db: {
+      name : "GraphForest"
+    },
     API_DIR : '/APIs',
     VALIDATOR_DIR : '/Validators',
     API_PREFIX : {
       API : '/api',
       AUTH : '/auth'
-    },
-    db: {
-      name : "db Name"
-    },
+    }
   }
 };
 

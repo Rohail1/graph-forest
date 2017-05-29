@@ -6,8 +6,7 @@
 module.exports=  function ({mongoose}) {
 
 
-  let helpers = {
-
+  return  {
     copyObjects: function clone(a,propToExclude) {
       let obj = JSON.parse(JSON.stringify(a));
       if(propToExclude)
@@ -39,5 +38,4 @@ module.exports=  function ({mongoose}) {
       }
     }
   };
-  return helpers;
 };

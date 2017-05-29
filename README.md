@@ -25,7 +25,7 @@ As for Route level middlewares you can register them when you register the route
 
 
 ### APIs
-For writing APIs create a file in the APIs folder By following the structure of the TestAPI.js File And the routes and their middleware will automatically be registered to the Application. I have passed all the dependencies via object to  the APIs each of those can be accessible via destructuring the paramenters of the Setup function. Look into TestAPI.js file for furthor details </br>
+For writing APIs create a file in the APIs folder By following the structure of the CSVParser.js File And the routes and their middleware will automatically be registered to the Application. I have passed all the dependencies via object to  the APIs each of those can be accessible via destructuring the paramenters of the Setup function. Look into CSVParser.js file for furthor details </br>
 
       module.exports.APIs = {
     
