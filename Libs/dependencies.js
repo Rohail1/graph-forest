@@ -17,6 +17,7 @@ module.exports = function (app, express,config) {
     cors : require('cors'),
     mongoose : mongoose,
     multer : require('multer'),
+    csv : require('csvtojson'),
     fs : require('fs-extra'),
     dbConnection : dbConnection,
     models : models,

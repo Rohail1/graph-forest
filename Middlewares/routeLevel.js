@@ -18,16 +18,17 @@ module.exports = function ({multer}) {
 
   const mediaStorage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads/products/')
+      cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
-      cb(null,file.originalname)
+      cb(null,file.originalname + Date.now())
     }
   });
   let uploadImageMiddleware = multer({  storage: mediaStorage});
 
   return {
-    getParams
+    getParams,
+    uploadImageMiddleware
   }
 
 };

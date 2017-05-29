@@ -1,18 +1,27 @@
 
 
-module.exports.setupFunction = function ({config,messages,models},helper,middlewares,validator) {
+module.exports.setupFunction = function ({config,messages,csv,models},helper,middlewares,validator) {
 
   const updateCSVFile = async (req,res) => {
     try {
-      let validated = await validator.validatePostUsers(req.inputs);
-      if(validated.error)
-        return helper.sendError(res,validated.error);
-      let user = new models.User();
-      user._id = helper.generateObjectId();
-      user.firstName = req.inputs.firstName;
-      user.lastName = req.inputs.lastName;
-      await user.save();
-      return helper.sendResponse(res,messages.SUCCESSFUL,user);
+      // let validated = await validator.validatePostUsers(req.inputs);
+      // if(validated.error)
+      if(!req.file)
+        return helper.sendResponse(res,messages.BAD_REQUEST);
+      let data = [];
+      csv()
+        .fromFile(req.file.path)
+        .on('json',(jsonObj)=>{
+          data.push(jsonObj);
+        })
+        .on('done',async (error)=>{
+          let csvData = new models.CSV();
+          csvData._id = helper.generateObjectId();
+          csvData.name = req.file.originalname;
+          csvData.data = data;
+          await csvData.save();
+          return helper.sendResponse(res,messages.SUCCESSFUL,data);
+        });
     } catch (ex){
       return helper.sendError(res,ex)
     }
@@ -21,10 +30,10 @@ module.exports.setupFunction = function ({config,messages,models},helper,middlew
   module.exports.APIs = {
 
     updateCVSFile : {
-      route : '/upload/csv',
+      route : '/uploads',
       method : 'POST',
       prefix : config.API_PREFIX.API,
-      middlewares : [], //FIFO order of middleware
+      middlewares : [middlewares.uploadImageMiddleware.single('mediaFile')], //FIFO order of middleware
       handler : updateCSVFile
     },
 

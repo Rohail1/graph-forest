@@ -8,9 +8,12 @@ module.exports = function(Schema){
     _id : {
       type : Schema.Types.ObjectId,
     },
-    data : {
+    name : {
+      type : Schema.Types.String
+    },
+    data : [{
       type : Schema.Types.Mixed
-    }
+    }]
   },{
     timeStamp : true
   });
