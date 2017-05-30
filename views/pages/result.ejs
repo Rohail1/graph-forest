@@ -2,6 +2,10 @@
 <html lang="en">
 <head>
     <% include ../partials/head.ejs %>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0/dc.min.css">
+    <script src="../js/crossfilter.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0/dc.min.js"></script>
 </head>
 <body class="container">
 
@@ -15,20 +19,140 @@
         <p>Upload your CSV file and Using Crossfilter we can manupilate Data and show it in graphs</p>
     </div>
     <h1 class="h3">Result</h1>
-    <ul>
-        <% for (var i = 0; i < data.length; i++) { %>
-        <li >
-            <span >
-            <%= data[i].Name %>
-            </span>
-        </li>
-        <% } %>
-    </ul>
+    <div>
+        <div style="height: 390px;margin-bottom: 50px;">
+            <h1> NodeJs Skill Level</h1>
+            <div class="reset" id="NodeJsGraph"></div>
+        </div>
+
+        <div style="height: 390px;margin-bottom: 50px;">
+            <h1> Java Skill Level</h1>
+            <div  id="JavaGraph"></div>
+        </div>
+        <div style="height: 350px;margin-bottom: 200px;">
+            <h1>Total Experience </h1>
+           <div  id="totalExpPie"></div>
+        </div>
+        <div style="height: 350px;margin-bottom: 200px;">
+            <h1>Venture Dive Experience </h1>
+           <div  id="VdExpPie"></div>
+        </div>
+        <div style="margin-bottom: 50px;">
+            <h1> Employee Table</h1>
+            <div class="table" id="table"></div>
+        </div>
+    </div>
+
 </main>
 
-<footer>
-    <% include ../partials/footer.ejs%>
-</footer>
 
+<script type="text/javascript">
+  var myData  =  <%- data %>
+  var ndx = crossfilter(myData.data);
+
+  // Graphs
+
+  var nodeJsChart = dc.barChart('#NodeJsGraph');
+  var javaChart = dc.barChart('#JavaGraph');
+  var totalExpPieChart  = dc.pieChart("#totalExpPie");
+  var vDExpPieChart  = dc.pieChart("#VdExpPie");
+
+  // Dimensions
+
+  var nodeJsDimension = ndx.dimension(function(d) { return d.rate_Nodejs; });
+  var javaDimension = ndx.dimension(function(d) { return d['rate_ Java']; });
+  var totalExpDimension = ndx.dimension(function(d) { return d.totalExp});
+  var vDExpDimension = ndx.dimension(function(d) { return d.totalVdExp});
+
+  // Grouping
+
+  var nodeJsGroup = nodeJsDimension.group().reduceCount(function (d) {return d.rate_Nodejs;})
+  var javaGroup = javaDimension.group().reduceCount(function (d) {return d['rate_ Java'];})
+  var totalExpGroup = totalExpDimension.group().reduceCount(function(d) {return d.totalExp;});
+  var vDExpGroup = vDExpDimension.group().reduceCount(function(d) {return d.totalVdExp;});
+
+  nodeJsChart.width(500)
+    .height(380)
+    .x(d3.scale.ordinal())
+    .xUnits(dc.units.ordinal)
+    .brushOn(false)
+    .xAxisLabel('skill Level')
+    .yAxisLabel('No of Professionals')
+    .dimension(nodeJsDimension)
+    .barPadding(0.1)
+    .outerPadding(0.05)
+    .group(nodeJsGroup);
+
+  javaChart.width(500)
+    .height(380)
+    .x(d3.scale.ordinal())
+    .xUnits(dc.units.ordinal)
+    .brushOn(false)
+    .xAxisLabel('skill Level')
+    .yAxisLabel('No of Professionals')
+    .dimension(javaDimension)
+    .barPadding(0.1)
+    .outerPadding(0.05)
+    .group(javaGroup);
+
+  totalExpPieChart
+    .width(768)
+    .height(480)
+    .slicesCap(20)
+    .innerRadius(50)
+    .dimension(totalExpDimension)
+    .group(totalExpGroup)
+    .legend(dc.legend())
+    // workaround for #703: not enough data is accessible through .label() to display percentages
+    .on('pretransition', function(chart) {
+      chart.selectAll('text.pie-slice').text(function(d) {
+        console.log('d',d);
+        return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) * 100) + '%';
+      })
+    });
+
+  vDExpPieChart
+    .width(768)
+    .height(480)
+    .slicesCap(60)
+    .innerRadius(50)
+    .dimension(vDExpDimension)
+    .group(vDExpGroup)
+    .legend(dc.legend())
+    // workaround for #703: not enough data is accessible through .label() to display percentages
+    .on('pretransition', function(chart) {
+      chart.selectAll('text.pie-slice').text(function(d) {
+        console.log('d',d);
+        return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) * 100) + '%';
+      })
+    });
+
+
+  var table = dc.dataTable('#table');
+  table
+    .dimension(javaDimension)
+    .group(function(d) {
+      return d.value;
+    })
+    .sortBy(function(d) { return d.rate_Nodejs; })
+    .showGroups(false)
+    .columns(['Name',
+      {
+        label: ' Java Skills ',
+        format: function(d) {
+          return d['rate_ Java'];
+        }
+      },
+      {
+        label: ' Nodejs Skills',
+        format: function(d) {
+          return d.rate_Nodejs;
+        }
+      }]);
+
+
+  dc.renderAll();
+</script>
 </body>
+
 </html>

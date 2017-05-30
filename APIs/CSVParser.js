@@ -33,10 +33,11 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
 
   const result = async (req,res) =>{
     try {
+      console.log('result Id',req.inputs.resultId);
       let csvFile = await models.CSV.findOne({_id : req.inputs.resultId});
       if(!csvFile)
         return helper.sendResponse(res,messages.DATA_NOT_FOUND);
-      return res.render('pages/result.ejs',{data:csvFile.data});
+      return res.render('pages/result.ejs',{data: JSON.stringify(csvFile)});
     }catch(ex){
       return helper.sendError(res,ex)
     }
