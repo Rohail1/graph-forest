@@ -22,20 +22,36 @@
     <div>
         <div style="height: 390px;margin-bottom: 50px;">
             <h1> NodeJs Skill Level</h1>
-            <div class="reset" id="NodeJsGraph"></div>
+            <div class="reset" id="NodeJsGraph">
+                <div class="reset" >selected: <span class="filter"></span>
+                    <a href="javascript:nodeJsChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
         </div>
 
         <div style="height: 390px;margin-bottom: 50px;">
             <h1> Java Skill Level</h1>
-            <div  id="JavaGraph"></div>
+            <div  id="JavaGraph">
+                <div class="reset" >selected: <span class="filter"></span>
+                    <a href="javascript:javaChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
         </div>
         <div style="height: 350px;margin-bottom: 200px;">
             <h1>Total Experience </h1>
-           <div  id="totalExpPie"></div>
+           <div  id="totalExpPie">
+               <div class="reset" >selected: <span class="filter"></span>
+                   <a href="javascript:totalExpPieChart.filterAll();dc.redrawAll();">reset</a>
+               </div>
+           </div>
         </div>
         <div style="height: 350px;margin-bottom: 200px;">
             <h1>Venture Dive Experience </h1>
-           <div  id="VdExpPie"></div>
+           <div  id="VdExpPie">
+               <div class="reset" >selected: <span class="filter"></span>
+                   <a href="javascript:vDExpPieChart.filterAll();dc.redrawAll();">reset</a>
+               </div>
+           </div>
         </div>
         <div style="margin-bottom: 50px;">
             <h1> Employee Table</h1>
