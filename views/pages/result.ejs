@@ -28,7 +28,7 @@
         <p>Upload your CSV file and Using Crossfilter we can manupilate Data and show it in graphs</p>
     </div>
     <h1 class="h3">Skill Sets</h1>
-    <% Object.keys(JSON.parse(data).data[0]).forEach(function(prop) { %>
+    <% Object.keys(JSON.parse(data).data.reduce(function (a, b) { return Object.keys(a).length > Object.keys(b).length ? a : b; })).forEach(function(prop) { %>
     <button id="<%- prop %>" onclick="addGraph('<%- prop %>')" class="btn btn-primary paddingClass" >  <%- prop %> </button>
     <% }); %>
     <div id="container">
@@ -60,7 +60,6 @@
 
 
 <script type="text/javascript">
-
 
   var myData  =  <%- data %>
   var ndx = crossfilter(myData.data);
