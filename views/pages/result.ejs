@@ -141,7 +141,9 @@
       })
       .sortBy(function(d) { return d.Name; })
       .showGroups(false)
-      .columns(columnsArrays);
+      .size(Infinity)
+      .columns(columnsArrays)
+      .order(d3.ascending);
 
     table.render()
 
@@ -201,7 +203,9 @@
     })
     .sortBy(function(d) { return d.Name; })
     .showGroups(false)
-    .columns(columnsArrays);
+    .size(Infinity)
+    .columns(columnsArrays)
+    .order(d3.ascending);
 
   dc.renderAll();
 
