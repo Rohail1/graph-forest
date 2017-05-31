@@ -11,6 +11,9 @@
             height: 390px;
             margin-bottom: 50px;
         }
+        .paddingClass {
+            margin: 2px;
+        }
     </style>
 </head>
 <body class="container">
@@ -26,25 +29,10 @@
     </div>
     <h1 class="h3">Skill Sets</h1>
     <% Object.keys(JSON.parse(data).data[0]).forEach(function(prop) { %>
-    <button id="<%- prop %>" onclick="addGraph('<%- prop %>')">  <%- prop %> </button>
+    <button id="<%- prop %>" onclick="addGraph('<%- prop %>')" class="btn btn-primary paddingClass" >  <%- prop %> </button>
     <% }); %>
     <div id="container">
-<!--        <div class="barChartGraph">
-            <h1> NodeJs Skill Level</h1>
-            <div class="reset" id="NodeJsGraph">
-                <div class="reset" >selected: <span class="filter"></span>
-                    <a href="javascript:nodeJsChart.filterAll();dc.redrawAll();">reset</a>
-                </div>
-            </div>
-        </div>
-        <div class="barChartGraph">
-            <h1> Java Skill Level</h1>
-            <div  id="JavaGraph">
-                <div class="reset" >selected: <span class="filter"></span>
-                    <a href="javascript:javaChart.filterAll();dc.redrawAll();">reset</a>
-                </div>
-            </div>
-        </div>-->
+
         <div id="totalExpContainer" style="height: 480px;margin-bottom: 50px;">
             <h1>Total Experience </h1>
             <div  id="totalExpPie">
@@ -105,7 +93,7 @@
 
     // heading
     var h1 = document.createElement("h1");
-    h1.innerHTML = id.split('_')[1] + " Skill Level"
+    h1.innerHTML = (id.split('_')[1] ? id.split('_')[1] : id)  + " Skill Level"
     div.appendChild(h1);
     div.appendChild(graphdiv);
     // container dive :D
@@ -114,7 +102,6 @@
     achor.href = "javascript:graphs['"+id+"'].filterAll();dc.redrawAll();"
 
   }
-
 
   function CreateGraph(id){
     graphs[id] = dc.barChart('#'+id+"Graph");
@@ -138,7 +125,7 @@
     for(let props in graphs){
 
       let obj = {
-        label : props.split('_')[1] + " Skill ",
+        label : (props.split('_')[1] ? props.split('_')[1] : props)   + " Skill ",
         format: function(d) {
           return d[props];
         }
@@ -160,52 +147,20 @@
 
   }
 
-
   // Graph
 
-/*
-  var nodeJsChart = dc.barChart('#NodeJsGraph');
-  var javaChart = dc.barChart('#JavaGraph');*/
   var totalExpPieChart  = dc.pieChart("#totalExpPie");
   var vDExpPieChart  = dc.pieChart("#VdExpPie");
 
   // Dimensions
 
-/*  var nodeJsDimension = ndx.dimension(function(d) { return d.rate_Nodejs; });
-  var javaDimension = ndx.dimension(function(d) { return d['rate_ Java']; });*/
   var totalExpDimension = ndx.dimension(function(d) { return d.totalExp});
   var vDExpDimension = ndx.dimension(function(d) { return d.totalVdExp});
 
   // Grouping
 
-/*  var nodeJsGroup = nodeJsDimension.group().reduceCount(function (d) {return d.rate_Nodejs;})
-  var javaGroup = javaDimension.group().reduceCount(function (d) {return d['rate_ Java'];})*/
   var totalExpGroup = totalExpDimension.group().reduceCount(function(d) {return d.totalExp;});
   var vDExpGroup = vDExpDimension.group().reduceCount(function(d) {return d.totalVdExp;});
-
-/*  nodeJsChart.width(500)
-    .height(380)
-    .x(d3.scale.ordinal())
-    .xUnits(dc.units.ordinal)
-    .brushOn(false)
-    .xAxisLabel('skill Level')
-    .yAxisLabel('No of Professionals')
-    .dimension(nodeJsDimension)
-    .barPadding(0.1)
-    .outerPadding(0.05)
-    .group(nodeJsGroup);
-
-  javaChart.width(500)
-    .height(380)
-    .x(d3.scale.ordinal())
-    .xUnits(dc.units.ordinal)
-    .brushOn(false)
-    .xAxisLabel('skill Level')
-    .yAxisLabel('No of Professionals')
-    .dimension(javaDimension)
-    .barPadding(0.1)
-    .outerPadding(0.05)
-    .group(javaGroup);*/
 
   totalExpPieChart
     .width(768)
@@ -237,9 +192,23 @@
       })
     });
 
+  let table = dc.dataTable('#table');
+  let columnsArrays = ['Name','dob','University','totalExp']
+  table
+    .dimension(vDExpDimension)
+    .group(function(d) {
+      return d.value;
+    })
+    .sortBy(function(d) { return d.Name; })
+    .showGroups(false)
+    .columns(columnsArrays);
 
   dc.renderAll();
+
 </script>
+<footer>
+    <% include ../partials/footer.ejs%>
+</footer>
 </body>
 
 </html>
