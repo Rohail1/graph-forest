@@ -6,6 +6,12 @@
     <script src="../js/crossfilter.js"></script>
     <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0/dc.min.js"></script>
+    <style>
+        .barChartGraph {
+            height: 390px;
+            margin-bottom: 50px;
+        }
+    </style>
 </head>
 <body class="container">
 
@@ -18,9 +24,12 @@
         <h1>Graph-Forest</h1>
         <p>Upload your CSV file and Using Crossfilter we can manupilate Data and show it in graphs</p>
     </div>
-    <h1 class="h3">Result</h1>
-    <div>
-        <div style="height: 390px;margin-bottom: 50px;">
+    <h1 class="h3">Skill Sets</h1>
+    <% Object.keys(JSON.parse(data).data[0]).forEach(function(prop) { %>
+    <button id="<%- prop %>" onclick="addGraph('<%- prop %>')">  <%- prop %> </button>
+    <% }); %>
+    <div id="container">
+<!--        <div class="barChartGraph">
             <h1> NodeJs Skill Level</h1>
             <div class="reset" id="NodeJsGraph">
                 <div class="reset" >selected: <span class="filter"></span>
@@ -28,32 +37,32 @@
                 </div>
             </div>
         </div>
-
-        <div style="height: 390px;margin-bottom: 50px;">
+        <div class="barChartGraph">
             <h1> Java Skill Level</h1>
             <div  id="JavaGraph">
                 <div class="reset" >selected: <span class="filter"></span>
                     <a href="javascript:javaChart.filterAll();dc.redrawAll();">reset</a>
                 </div>
             </div>
-        </div>
-        <div style="height: 350px;margin-bottom: 200px;">
+        </div>-->
+        <div id="totalExpContainer" style="height: 480px;margin-bottom: 50px;">
             <h1>Total Experience </h1>
-           <div  id="totalExpPie">
-               <div class="reset" >selected: <span class="filter"></span>
-                   <a href="javascript:totalExpPieChart.filterAll();dc.redrawAll();">reset</a>
-               </div>
-           </div>
+            <div  id="totalExpPie">
+                <div class="reset" >selected: <span class="filter"></span>
+                    <a href="javascript:totalExpPieChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
         </div>
-        <div style="height: 350px;margin-bottom: 200px;">
+        <div style="height: 480px;margin-bottom: 50px;">
+            <br/>
             <h1>Venture Dive Experience </h1>
-           <div  id="VdExpPie">
-               <div class="reset" >selected: <span class="filter"></span>
-                   <a href="javascript:vDExpPieChart.filterAll();dc.redrawAll();">reset</a>
-               </div>
-           </div>
+            <div  id="VdExpPie">
+                <div class="reset" >selected: <span class="filter"></span>
+                    <a href="javascript:vDExpPieChart.filterAll();dc.redrawAll();">reset</a>
+                </div>
+            </div>
         </div>
-        <div style="margin-bottom: 50px;">
+        <div style="margin-top: 150px;">
             <h1> Employee Table</h1>
             <div class="table" id="table"></div>
         </div>
@@ -63,31 +72,118 @@
 
 
 <script type="text/javascript">
+
+
   var myData  =  <%- data %>
   var ndx = crossfilter(myData.data);
+  var dimensions = {};
+  var graphs = {};
+  var groups = {};
 
-  // Graphs
+  function addGraph(id){
+    // block div
+    var div = document.createElement("div");
+    div.className   = "barChartGraph"
 
+    // graph div
+    var graphdiv = document.createElement("div");
+    graphdiv.id  = id+'Graph'
+
+    // reset div
+    var resetDiv = document.createElement("div");
+    resetDiv.className   = "reset"
+    resetDiv.innerHTML= "selected : "
+
+    //span and achortag
+    var span = document.createElement("span");
+    span.className = "fliter"
+    var achor = document.createElement("a");
+    achor.innerHTML = "reset"
+    resetDiv.appendChild(span);
+    resetDiv.appendChild(achor);
+    graphdiv.appendChild(resetDiv);
+
+    // heading
+    var h1 = document.createElement("h1");
+    h1.innerHTML = id.split('_')[1] + " Skill Level"
+    div.appendChild(h1);
+    div.appendChild(graphdiv);
+    // container dive :D
+    document.getElementById("container").insertBefore(div,document.getElementById("totalExpContainer"));
+    CreateGraph(id);
+    achor.href = "javascript:graphs['"+id+"'].filterAll();dc.redrawAll();"
+
+  }
+
+
+  function CreateGraph(id){
+    graphs[id] = dc.barChart('#'+id+"Graph");
+    dimensions[id] = ndx.dimension(function(d) { return d[id]; });
+    groups[id] = dimensions[id].group().reduceCount(function (d) {return d[id];})
+
+    graphs[id].width(500)
+      .height(380)
+      .x(d3.scale.ordinal())
+      .xUnits(dc.units.ordinal)
+      .brushOn(false)
+      .xAxisLabel('skill Level')
+      .yAxisLabel('No of Professionals')
+      .dimension(dimensions[id])
+      .barPadding(0.1)
+      .outerPadding(0.05)
+      .group(groups[id]);
+    graphs[id].render();
+
+    let dynamicColumns = [];
+    for(let props in graphs){
+
+      let obj = {
+        label : props.split('_')[1] + " Skill ",
+        format: function(d) {
+          return d[props];
+        }
+      }
+      dynamicColumns.push(obj);
+    }
+    let columnsArrays = ['Name','dob','University','totalExp',...dynamicColumns]
+    var table = dc.dataTable('#table');
+    table
+      .dimension(dimensions[id])
+      .group(function(d) {
+        return d.value;
+      })
+      .sortBy(function(d) { return d.Name; })
+      .showGroups(false)
+      .columns(columnsArrays);
+
+    table.render()
+
+  }
+
+
+  // Graph
+
+/*
   var nodeJsChart = dc.barChart('#NodeJsGraph');
-  var javaChart = dc.barChart('#JavaGraph');
+  var javaChart = dc.barChart('#JavaGraph');*/
   var totalExpPieChart  = dc.pieChart("#totalExpPie");
   var vDExpPieChart  = dc.pieChart("#VdExpPie");
 
   // Dimensions
 
-  var nodeJsDimension = ndx.dimension(function(d) { return d.rate_Nodejs; });
-  var javaDimension = ndx.dimension(function(d) { return d['rate_ Java']; });
+/*  var nodeJsDimension = ndx.dimension(function(d) { return d.rate_Nodejs; });
+  var javaDimension = ndx.dimension(function(d) { return d['rate_ Java']; });*/
   var totalExpDimension = ndx.dimension(function(d) { return d.totalExp});
   var vDExpDimension = ndx.dimension(function(d) { return d.totalVdExp});
 
   // Grouping
 
-  var nodeJsGroup = nodeJsDimension.group().reduceCount(function (d) {return d.rate_Nodejs;})
-  var javaGroup = javaDimension.group().reduceCount(function (d) {return d['rate_ Java'];})
+/*  var nodeJsGroup = nodeJsDimension.group().reduceCount(function (d) {return d.rate_Nodejs;})
+  var javaGroup = javaDimension.group().reduceCount(function (d) {return d['rate_ Java'];})*/
   var totalExpGroup = totalExpDimension.group().reduceCount(function(d) {return d.totalExp;});
   var vDExpGroup = vDExpDimension.group().reduceCount(function(d) {return d.totalVdExp;});
 
-  nodeJsChart.width(500)
+/*  nodeJsChart.width(500)
     .height(380)
     .x(d3.scale.ordinal())
     .xUnits(dc.units.ordinal)
@@ -109,7 +205,7 @@
     .dimension(javaDimension)
     .barPadding(0.1)
     .outerPadding(0.05)
-    .group(javaGroup);
+    .group(javaGroup);*/
 
   totalExpPieChart
     .width(768)
@@ -122,7 +218,6 @@
     // workaround for #703: not enough data is accessible through .label() to display percentages
     .on('pretransition', function(chart) {
       chart.selectAll('text.pie-slice').text(function(d) {
-        console.log('d',d);
         return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) * 100) + '%';
       })
     });
@@ -138,33 +233,9 @@
     // workaround for #703: not enough data is accessible through .label() to display percentages
     .on('pretransition', function(chart) {
       chart.selectAll('text.pie-slice').text(function(d) {
-        console.log('d',d);
         return d.data.key + ' ' + dc.utils.printSingleValue((d.endAngle - d.startAngle) / (2*Math.PI) * 100) + '%';
       })
     });
-
-
-  var table = dc.dataTable('#table');
-  table
-    .dimension(javaDimension)
-    .group(function(d) {
-      return d.value;
-    })
-    .sortBy(function(d) { return d.rate_Nodejs; })
-    .showGroups(false)
-    .columns(['Name',
-      {
-        label: ' Java Skills ',
-        format: function(d) {
-          return d['rate_ Java'];
-        }
-      },
-      {
-        label: ' Nodejs Skills',
-        format: function(d) {
-          return d.rate_Nodejs;
-        }
-      }]);
 
 
   dc.renderAll();
