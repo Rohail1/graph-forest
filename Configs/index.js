@@ -9,11 +9,12 @@ const rootPath = path.normalize(__dirname+"/../");
 const configurations = {
 
   development : {
-    port : process.env.PORT,
+    port : process.env.PORT || 3000,
     rootPath : rootPath,
     db: {
       name : "GraphForest"
     },
+    DB_HOST : 'mongodb://admin:admin@ds127842.mlab.com:27842/graphforest',
     logStyle : 'dev',
     API_DIR : '/APIs',
     VALIDATOR_DIR : '/Validators',

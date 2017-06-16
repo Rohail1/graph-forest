@@ -5,8 +5,8 @@
 const express = require('express');
 let app = express();
 app.locals.env = process.env.NODE_ENV = process.env.NODE_ENV || "development";
-app.locals.title = "Project Name";
-require('dotenv').config({path : require('./Configs/envConfigs')(app.locals.env)});
+app.locals.title = "Graph Forest";
+// require('dotenv').config({path : require('./Configs/envConfigs')(app.locals.env)});
 const config = require('./Configs')(app.locals.env);
 const dependencies = require('./Libs/dependencies')(app,express,config);
 let helpers = require('./Libs/helper')(dependencies);
