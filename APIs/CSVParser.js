@@ -1,6 +1,6 @@
 
 
-module.exports.setupFunction = function ({config,messages,csv,models},helper,middlewares,validator) {
+module.exports.setupFunction = function ({config,messages,csv,models,app},helper,middlewares,validator) {
 
   const updateCSVFile = async (req,res) => {
     try {
@@ -15,12 +15,17 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
           data.push(jsonObj);
         })
         .on('done',async (error)=>{
-          let csvData = new models.CSV();
+          app.locals.cvsObj = {
+            _id :helper.generateObjectId(),
+            name : req.file.originalname,
+            data : data
+          };
+/*          let csvData = new models.CSV();
           csvData._id = helper.generateObjectId();
           csvData.name = req.file.originalname;
           csvData.data = data;
-          await csvData.save();
-          return res.redirect('/result/'+csvData._id);
+          await csvData.save();*/
+          return res.redirect('/result/'+app.locals.cvsObj._id);
         });
     } catch (ex){
       return helper.sendError(res,ex)
@@ -33,8 +38,7 @@ module.exports.setupFunction = function ({config,messages,csv,models},helper,mid
 
   const result = async (req,res) =>{
     try {
-      console.log('result Id',req.inputs.resultId);
-      let csvFile = await models.CSV.findOne({_id : req.inputs.resultId});
+      let csvFile = app.locals.cvsObj;
       if(!csvFile)
         return helper.sendResponse(res,messages.DATA_NOT_FOUND);
       return res.render('pages/result.ejs',{data: JSON.stringify(csvFile)});
