@@ -32,6 +32,7 @@ const configurations = {
     db: {
       name : "GraphForest"
     },
+    DB_HOST : 'mongodb://admin:admin@ds127842.mlab.com:27842/graphforest',
     API_DIR : '/APIs',
     VALIDATOR_DIR : '/Validators',
     API_PREFIX : {
@@ -48,6 +49,7 @@ const configurations = {
     db: {
       name : "GraphForest"
     },
+    DB_HOST : 'mongodb://admin:admin@ds127842.mlab.com:27842/graphforest',
     API_DIR : '/APIs',
     VALIDATOR_DIR : '/Validators',
     API_PREFIX : {
