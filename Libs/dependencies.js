@@ -22,6 +22,7 @@ module.exports = function (app, express,config) {
     dbConnection : dbConnection,
     models : models,
     messages : require('../Configs/messages'),
+    data : require('../Configs/data'),
     path : require('path'),
     joi : require('joi')
   };

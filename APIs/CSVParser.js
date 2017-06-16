@@ -1,6 +1,6 @@
 
 
-module.exports.setupFunction = function ({config,messages,csv,models,app},helper,middlewares,validator) {
+module.exports.setupFunction = function ({config,messages,csv,models,app,data},helper,middlewares,validator) {
 
   const updateCSVFile = async (req,res) => {
     try {
@@ -33,7 +33,7 @@ module.exports.setupFunction = function ({config,messages,csv,models,app},helper
   };
 
   const sendIndexFile = async (req,res) => {
-    return res.render('pages/index.ejs');
+    return res.render('pages/result.ejs',{data: JSON.stringify(data)});
   };
 
   const result = async (req,res) =>{
